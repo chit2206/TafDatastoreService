@@ -18,6 +18,8 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
+bootJar
+		{archiveFileName='flightdb-ms.jar'}
 
 repositories {
 	mavenCentral()
