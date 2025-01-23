@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface FlightInterface {
     Optional<Flights> findById(Long id);
+    Flights updateFlight(Long id, Flights flight);
+
 }

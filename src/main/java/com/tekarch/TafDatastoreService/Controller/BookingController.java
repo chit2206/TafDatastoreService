@@ -1,7 +1,5 @@
 package com.tekarch.TafDatastoreService.Controller;
-import com.tekarch.TafDatastoreService.Models.Booking;
-import com.tekarch.TafDatastoreService.Models.BookingResponse;
-import com.tekarch.TafDatastoreService.Models.Flights;
+import com.tekarch.TafDatastoreService.Models.*;
 import com.tekarch.TafDatastoreService.Repository.BookingRepository;
 import com.tekarch.TafDatastoreService.Service.BookingInterfaceImpl;
 import org.apache.logging.log4j.LogManager;
@@ -20,14 +18,19 @@ import java.util.Optional;
 public class BookingController {
 
     private final BookingInterfaceImpl bookingSvcImpl;
+    @Autowired
+    BookingRepository bookingRepository;
     public static final Logger log= LogManager.getLogger(BookingController.class);
 
     public BookingController(BookingInterfaceImpl bookingSvcImpl) {
         this.bookingSvcImpl = bookingSvcImpl;
     }
-
+    @GetMapping
+    public ResponseEntity<List<Booking>> getAllTransfers() {
+        return new ResponseEntity<>(bookingRepository.findAll(), HttpStatus.OK);
+    }
     @PostMapping
-    public ResponseEntity<BookingResponse> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<Booking> createBooking(@RequestBody BookingDTO booking) {
         return new ResponseEntity<>(bookingSvcImpl.createBooking(booking), HttpStatus.OK);
     }
 
@@ -48,10 +51,10 @@ public class BookingController {
     }
 
     @DeleteMapping("/{bookingId}")
-    public ResponseEntity<Booking> cancelBooking(@PathVariable Long bookingId) {
+    public ResponseEntity<Void> cancelBooking(@PathVariable Long bookingId) {
         try {
-            Booking booking = bookingSvcImpl.cancelBooking(bookingId);
-            return ResponseEntity.ok(booking);
+            bookingSvcImpl.cancelBooking(bookingId);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
